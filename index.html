@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fleet: run many coding agents, know which one needs you</title>
-<meta name="description" content="A native Mac app for Claude Code and Codex. Every chat in its own pane, a clear WAITING or DONE on each one, and a free local X-ray of your usage. No proxy, no login, nothing uploaded.">
+<title>Fleet: the cockpit and cost X-ray for Claude Code and Codex</title>
+<meta name="description" content="A native Mac cockpit for Claude Code and Codex. Every chat in its own pane, a free X-ray of where your tokens went, and a side panel that turns cost switches, skills and compaction into buttons. No proxy, no login, nothing uploaded.">
 <meta property="og:title" content="Fleet: know which coding agent needs you">
-<meta property="og:description" content="A native Mac app for Claude Code and Codex. We publish the tests our own ideas failed.">
+<meta property="og:description" content="A Mac cockpit for Claude Code and Codex with a bill X-ray, one-click compaction and cost switches. We publish the tests our own ideas failed.">
 <meta property="og:image" content="https://fleetapp.in/icon-512.png">
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -58,6 +58,7 @@ pre code{background:none;border:0;padding:0}
 section{padding:64px 0 0}
 h2{font-size:clamp(25px,3.6vw,34px);line-height:1.2;letter-spacing:-.015em;margin:0 0 12px;max-width:24em}
 h3{font-size:18px;margin:0 0 6px}
+h3.grp{font:600 12.5px var(--mono);color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin:34px 0 12px}
 .sub{color:var(--soft);max-width:42em;margin:0 0 26px}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:20px}
@@ -90,8 +91,8 @@ footer a{color:var(--soft)}
   <div class="links"><a class="opt" href="#what">What it does</a><a href="#proof">Our tests</a><a href="#pricing">Pricing</a><a href="#install">Install</a></div>
 </nav>
 
-<h1>Run many coding agents. Know which one needs you.</h1>
-<p class="lede">A native Mac app for Claude Code and Codex. Every chat gets its own pane, and each pane shows WAITING or DONE, so you stop checking tabs. It runs the official CLIs as they are. No proxy, no login to us, nothing uploaded.</p>
+<h1>Run every coding agent from one window. See what each one costs.</h1>
+<p class="lede">Fleet is a native Mac cockpit for Claude Code and Codex. Each chat gets a pane that says WAITING or DONE. A free X-ray shows where your tokens went. A side panel turns compaction, cache and skills into buttons. We test every switch before we say it helps.</p>
 <div class="cta">
   <a class="btn primary" href="#install">Download for Mac</a>
   <a class="btn ghost" href="#proof">See what we tested</a>
@@ -113,21 +114,42 @@ one button that opens an alert.</pre></div>
 to Settings.swift?
 ❯ 1. Yes</pre></div>
     <div class="pane done"><header><i class="dot"></i>docs <span class="tag">DONE</span></header><pre>install.md now requires Node 20.</pre></div>
-    <div class="pane working"><header><i class="dot"></i>2nd opinion <span class="tag">WORKING</span></header><pre>codex: reviewing git diff HEAD,
-read-only…</pre></div>
+    <div class="pane working"><header><i class="dot"></i>tests <span class="tag">WORKING</span></header><pre>running 187 checks…</pre></div>
   </div>
 </figure>
 <p class="note">Illustration of the layout, with sample text.</p>
 
 <section id="what">
-  <h2>The parts that make it easier to run many agents</h2>
-  <p class="sub">Press ⌘J and you jump to the next pane that needs you.</p>
+  <h2>A cockpit for the agents, and a window into the bill</h2>
+  <p class="sub">Press ⌘J and you jump to the next pane that needs you. Everything below runs on your Mac, on top of the official CLIs.</p>
+
+  <h3 class="grp">Run many agents</h3>
   <div class="cards">
-    <div class="card"><h3>Who needs you</h3><p>WAITING when an agent asks a question or wants permission. DONE when it finishes. A sound you choose, a Dock count, and a Mac notification if you want one. The states come from Claude Code's own hooks, not from guessing at the screen.</p></div>
-    <div class="card"><h3>Chats that come back</h3><p>Each pane resumes its own chat by id when you reopen Fleet. "Restart to update" becomes one button that keeps the chat. Hide the window and your agents keep working in the menu bar.</p></div>
-    <div class="card"><h3>Bill X-ray, free</h3><p>Reads the transcripts already on your Mac and shows where your usage went: long chats, cold resumes, model switches, cache breaks, and helpers. Costs are at API list prices, so on a plan they show usage, not your bill.</p></div>
-    <div class="card"><h3>Cost, context and limits</h3><p>Each Claude pane shows its cost and how full its context is. The top bar shows your 5-hour and weekly limits for each account. Run several Claude and Codex accounts side by side.</p></div>
-    <div class="card"><h3>The small things</h3><p>Clean copy removes the left margin and trailing spaces from what you copy. Clipboard history in the top bar. Drag in images. A mic button for Claude Code's voice mode. Git worktree screens.</p></div>
+    <div class="card"><h3>Who needs you</h3><p>WAITING when an agent asks a question or wants permission. DONE when it finishes. A sound you choose, a Dock count, a Mac notification. The states come from Claude Code's own hooks, not from guessing at the screen.</p></div>
+    <div class="card"><h3>Chats that come back</h3><p>Each pane resumes its own chat by id when you reopen Fleet. "Restart to update" is one button that keeps the chat. Close a screen by mistake and it waits in Recently Closed (⇧⌘T). Open any folder as a new screen (⌘O).</p></div>
+    <div class="card"><h3>Screens and worktrees</h3><p>Group panes in screens, each on its own git worktree and branch, so two agents never edit the same files. Run several Claude and Codex accounts side by side.</p></div>
+    <div class="card"><h3>Talk to it</h3><p>Push to talk for Claude Code's voice mode, with a mic button because a terminal cannot send "key held". Drag in images. Clean copy strips the margin and trailing spaces. Clipboard history in the top bar.</p></div>
+  </div>
+
+  <h3 class="grp">See where the tokens go</h3>
+  <div class="cards">
+    <div class="card"><h3>Bill X-ray, free</h3><p>Reads the transcripts already on your Mac. It shows what the money went to: long chats, cold resumes after a pause, model switches, cache breaks, and helper agents. Costs are at API list prices, so on a plan they show usage, not your bill.</p></div>
+    <div class="card"><h3>Live cost and context</h3><p>Every Claude pane shows its cost so far and how full its context is. The top bar shows your 5-hour and weekly limits for each account.</p></div>
+    <div class="card"><h3>Check my switches</h3><p>Fleet logs each cost setting you change. Then it compares the days before with the days after, and ranks the switches by a replay of your own chats. A replay is a hint, not a result, and the panel says so.</p></div>
+  </div>
+
+  <h3 class="grp">Control it from a side panel</h3>
+  <div class="cards">
+    <div class="card"><h3>Compaction at the right moment</h3><p>Fleet shows COMPACT NOW when a chat has finished and waits for you, which is when the cache is cold anyway. It never compacts in the middle of a tool loop. An auto mode is there if you want it, with a floor you choose.</p></div>
+    <div class="card"><h3>Cost switches as buttons</h3><p>The 1-hour helper cache, smart compact, and the context cap are buttons in a side panel you can hide, not lines in a settings file. Each says what it does and what we know about it.</p></div>
+    <div class="card"><h3>Skills you can find</h3><p>The Skills tab lists the skills and plugin commands on your Mac and in your project, with search. Click one and its command goes into the pane. Add any folder of skills.</p></div>
+    <div class="card"><h3>Pinned rules</h3><p>Standing rules like "ask before you push" go into the system prompt of a chat, where compaction does not rewrite them. Fleet suggests rules from what you wrote in that chat.</p></div>
+  </div>
+
+  <h3 class="grp">Prove it, on your own work</h3>
+  <div class="cards">
+    <div class="card"><h3>A built-in experiment</h3><p>Turn on the experiment and each new chat gets a fair coin per switch. Fleet compares chats with the switch on and off, and checks that the work did not get worse: corrections, tool errors, lost context. The plan is written before the data, and a result of "can't tell" is allowed.</p></div>
+    <div class="card"><h3>Share what happened</h3><p>The Share tab opens a GitHub issue with totals and percentages only. You read it first and you click send. Nothing leaves your Mac before that.</p></div>
   </div>
 </section>
 
