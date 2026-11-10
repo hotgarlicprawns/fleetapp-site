@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Privacy</title>
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<style>
+:root{--ground:#0c0f14;--ink:#dce1e8;--soft:#a4aebb;--accent:#5fe3c2}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 17px/1.65 system-ui,sans-serif}
+main{max-width:680px;margin:0 auto;padding:40px 20px 64px}
+h1{font-size:32px;margin:0 0 8px}h2{font-size:20px;margin:30px 0 6px}
+p,li{color:var(--soft)}a{color:var(--accent)}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.9em;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<main>
+<h1>Privacy</h1>
+<p>Last updated: 2 November 2026. Fleet has no accounts and no analytics.</p>
+<h2>On your Mac</h2>
+<p>Fleet stores its settings in <code>~/.config/fleet</code>. Bill X-ray and the cost views read Claude Code's transcripts in <code>~/.claude</code> on your Mac. That data is not sent to us. Clipboard history stays on your Mac. It records what you copy in Fleet, and other apps' copies only if you turn that on.</p>
+<h2>What Fleet sends</h2>
+<ul>
+<li><strong>Update check.</strong> A plain request for <code>fleetapp.in/version.json</code>, at launch and about every 6 hours. It carries no identifier. Like any web request, it reveals your IP address to the host.</li>
+<li><strong>License check.</strong> Only after you enter a license key: the key and a name for this Mac go to Dodo Payments, to activate and validate it. No key means no check.</li>
+</ul>
+<h2>What the agents send</h2>
+<p>Fleet runs the official Claude Code and Codex commands. They talk to Anthropic and OpenAI under your own account and those companies' terms, as they do in any terminal. Fleet is not in that path.</p>
+<h2>Purchases</h2>
+<p>Dodo Payments handles payment as merchant of record and has its own privacy policy. We receive what we need to run licenses and support.</p>
+<h2>This website</h2>
+<p>GitHub Pages hosts this site, and it loads fonts from Google Fonts. Both can see your IP address. We add no trackers.</p>
+<h2>Contact</h2>
+<p>Open an issue at <a href="https://github.com/hotgarlicprawns/fleetapp-site/issues">the project's tracker</a>.</p>
+</main>
+</body>
+</html>

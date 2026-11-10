@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet: run many coding agents, know which one needs you</title>
+<meta name="description" content="A native Mac app for Claude Code and Codex. Every chat in its own pane, a clear WAITING or DONE on each one, and a free local X-ray of your usage. No proxy, no login, nothing uploaded.">
+<meta property="og:title" content="Fleet: know which coding agent needs you">
+<meta property="og:description" content="A native Mac app for Claude Code and Codex. We publish the tests our own ideas failed.">
+<meta property="og:image" content="https://fleetapp.in/icon-512.png">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  --ground:#0c0f14; --panel:#141922; --panel-2:#10141b; --ink:#dce1e8; --soft:#a4aebb; --faint:#778190;
+  --line:#232a35; --line-2:#313a47; --accent:#5fe3c2; --accent-ink:#0c2a22; --done:#5ed67a; --warn:#e6b667; --bad:#ef8a80;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 17px/1.6 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+nav .brand{display:flex;gap:10px;align-items:center;font:600 16px var(--mono);color:var(--ink);text-decoration:none}
+nav .brand img{width:26px;height:26px;border-radius:6px}
+nav .links{display:flex;gap:18px;font-size:15px}
+nav .links a{color:var(--soft);text-decoration:none}
+nav .links a:hover{color:var(--ink)}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.08;letter-spacing:-.02em;margin:44px 0 18px;font-weight:700;max-width:16em}
+.lede{font-size:clamp(18px,2.4vw,21px);color:var(--soft);max-width:38em;margin:0 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{display:inline-block;padding:13px 20px;border-radius:9px;font-weight:600;text-decoration:none;font-size:16px}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{border:1px solid var(--line-2);color:var(--ink)}
+.hint{font:400 13px var(--mono);color:var(--faint);margin-top:12px}
+code{font:400 .88em var(--mono);background:var(--panel);border:1px solid var(--line);padding:2px 6px;border-radius:5px;overflow-wrap:anywhere}
+pre{background:var(--panel-2);border:1px solid var(--line);padding:14px 16px;border-radius:9px;overflow-x:auto;font:400 13.5px/1.55 var(--mono);margin:12px 0}
+pre code{background:none;border:0;padding:0}
+
+.shot{margin:44px 0 10px;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;background:var(--panel)}
+.shot .bar{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);font:500 13px var(--mono);color:var(--soft)}
+.pill{background:var(--accent);color:var(--accent-ink);padding:3px 10px;border-radius:7px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.pane{background:#0a0d12;min-height:150px;display:flex;flex-direction:column;outline-offset:-2px}
+.pane.waiting{outline:2px solid var(--accent)} .pane.done{outline:2px solid var(--done)}
+.pane header{display:flex;gap:8px;align-items:center;padding:7px 10px;background:var(--panel);font:500 12px var(--mono);color:var(--soft)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+.waiting .dot{background:var(--accent)} .done .dot{background:var(--done)} .working .dot{background:var(--warn)}
+.tag{font-weight:600;font-size:10.5px;letter-spacing:.03em}
+.waiting .tag{color:var(--accent)} .done .tag{color:var(--done)} .working .tag{color:var(--warn)}
+.pane pre{margin:0;border:0;background:none;padding:10px;font-size:11.5px;color:#b9c1cc;white-space:pre-wrap;overflow:hidden}
+.note{font:400 13px var(--mono);color:var(--faint);margin:6px 0 0}
+
+section{padding:64px 0 0}
+h2{font-size:clamp(25px,3.6vw,34px);line-height:1.2;letter-spacing:-.015em;margin:0 0 12px;max-width:24em}
+h3{font-size:18px;margin:0 0 6px}
+.sub{color:var(--soft);max-width:42em;margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:20px}
+.card p{margin:0;color:var(--soft);font-size:15.5px}
+
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:11px}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:15px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12.5px var(--mono);color:var(--faint);background:var(--panel)}
+tr:last-child td{border-bottom:0}
+.fail{color:var(--bad);font-weight:600;white-space:nowrap}.pass{color:var(--done);font-weight:600;white-space:nowrap}.mixed{color:var(--warn);font-weight:600;white-space:nowrap}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+ul.clean{margin:0;padding-left:18px;color:var(--soft);font-size:15.5px}ul.clean li{margin:6px 0}
+.price{font-size:32px;font-weight:700;margin:4px 0 2px}
+.price small{font-size:15px;font-weight:400;color:var(--soft)}
+details{border-bottom:1px solid var(--line);padding:14px 0}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--soft);margin:8px 0 0;font-size:15.5px}
+footer{margin:72px 0 40px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:14px}
+footer a{color:var(--soft)}
+@media (max-width:760px){.grid{grid-template-columns:1fr 1fr}.pane:nth-child(n+5){display:none}nav .links a.opt{display:none}}
+@media (max-width:460px){.grid{grid-template-columns:1fr}.pane:nth-child(n+4){display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <a class="brand" href="#"><img src="icon-512.png" alt="">fleet</a>
+  <div class="links"><a class="opt" href="#what">What it does</a><a href="#proof">Our tests</a><a href="#pricing">Pricing</a><a href="#install">Install</a></div>
+</nav>
+
+<h1>Run many coding agents. Know which one needs you.</h1>
+<p class="lede">A native Mac app for Claude Code and Codex. Every chat gets its own pane, and each pane shows WAITING or DONE, so you stop checking tabs. It runs the official CLIs as they are. No proxy, no login to us, nothing uploaded.</p>
+<div class="cta">
+  <a class="btn primary" href="#install">Download for Mac</a>
+  <a class="btn ghost" href="#proof">See what we tested</a>
+</div>
+<p class="hint">Free for 3 panes. Apple Silicon, macOS 13 or later. You need your own Claude Code or Codex.</p>
+
+<figure class="shot" style="margin-bottom:0" aria-label="Illustration of the Fleet window with six panes">
+  <div class="bar"><span>acme</span><span class="pill">2 waiting</span></div>
+  <div class="grid">
+    <div class="pane waiting"><header><i class="dot"></i>api <span class="tag">WAITING</span></header><pre>Do you want to make this edit
+to server.js?
+❯ 1. Yes
+  2. Yes, allow all edits
+  3. No</pre></div>
+    <div class="pane done"><header><i class="dot"></i>web <span class="tag">DONE</span></header><pre>index.html shows a heading and
+one button that opens an alert.</pre></div>
+    <div class="pane working"><header><i class="dot"></i>billing <span class="tag">WORKING</span></header><pre>Reading invoice.py…</pre></div>
+    <div class="pane waiting"><header><i class="dot"></i>mobile <span class="tag">WAITING</span></header><pre>Do you want to make this edit
+to Settings.swift?
+❯ 1. Yes</pre></div>
+    <div class="pane done"><header><i class="dot"></i>docs <span class="tag">DONE</span></header><pre>install.md now requires Node 20.</pre></div>
+    <div class="pane working"><header><i class="dot"></i>2nd opinion <span class="tag">WORKING</span></header><pre>codex: reviewing git diff HEAD,
+read-only…</pre></div>
+  </div>
+</figure>
+<p class="note">Illustration of the layout, with sample text.</p>
+
+<section id="what">
+  <h2>The parts that make it easier to run many agents</h2>
+  <p class="sub">Press ⌘J and you jump to the next pane that needs you.</p>
+  <div class="cards">
+    <div class="card"><h3>Who needs you</h3><p>WAITING when an agent asks a question or wants permission. DONE when it finishes. A sound you choose, a Dock count, and a Mac notification if you want one. The states come from Claude Code's own hooks, not from guessing at the screen.</p></div>
+    <div class="card"><h3>Chats that come back</h3><p>Each pane resumes its own chat by id when you reopen Fleet. "Restart to update" becomes one button that keeps the chat. Hide the window and your agents keep working in the menu bar.</p></div>
+    <div class="card"><h3>Second opinion</h3><p>One click opens the other vendor's agent next to your pane, read-only, to review your uncommitted changes. Claude Code's work goes to Codex, and Codex's work goes to Claude Code. It only lists findings. You decide what is real.</p></div>
+    <div class="card"><h3>Bill X-ray, free</h3><p>Reads the transcripts already on your Mac and shows where your usage went: long chats, cold resumes, model switches, cache breaks, and helpers. Costs are at API list prices, so on a plan they show usage, not your bill.</p></div>
+    <div class="card"><h3>Cost, context and limits</h3><p>Each Claude pane shows its cost and how full its context is. The top bar shows your 5-hour and weekly limits for each account. Run several Claude and Codex accounts side by side.</p></div>
+    <div class="card"><h3>The small things</h3><p>Clean copy removes the left margin and trailing spaces from what you copy. Clipboard history in the top bar. Drag in images. A mic button for Claude Code's voice mode. Git worktree screens.</p></div>
+  </div>
+</section>
+
+<section id="proof">
+  <h2>We tested our token-saving ideas. Most of them failed.</h2>
+  <p class="sub">We set each pass rule before the run and used real tasks. <strong>We do not claim that Fleet will save you money.</strong> The X-ray shows your own numbers, and this table shows ours.</p>
+  <div class="scroll"><table>
+    <thead><tr><th>Idea</th><th>Test</th><th>Result</th><th>Verdict</th><th>What we did</th></tr></thead>
+    <tbody>
+      <tr><td>Fused search and edit tools</td><td>12 paired tasks with strict checks</td><td>About 11% more expensive</td><td class="fail">Failed</td><td>Removed the claim</td></tr>
+      <tr><td>All read-only helpers on Haiku</td><td>14 tasks, blind judge, control arm</td><td>98% cheaper. Score 7.0 vs 8.07 of 10. Worst task lost 4</td><td class="fail">Failed</td><td>Not a default</td></tr>
+      <tr><td>All read-only helpers on Sonnet</td><td>Same 14 tasks</td><td>65% cheaper. Score 6.71 vs 8.07. Worst task lost 5</td><td class="fail">Failed</td><td>Not a default</td></tr>
+      <tr><td>Haiku for mechanical lookups and log searches only</td><td>14 new tasks, scored by computer</td><td>Same answers as Opus on all 14, 97% cheaper. These tasks were easy for every model</td><td class="pass">Passed, narrowly scoped</td><td>Saver's lookup helper uses it. Not a claim about your bill</td></tr>
+      <tr><td>Compact at 100K, no tools</td><td>10 runs on 6 real chats. A worst-case memory quiz</td><td>Recall 3.9 vs 6.3 of 8</td><td class="fail">Failed</td><td>Off by default</td></tr>
+      <tr><td>Compact on resume at 200K</td><td>5 real chats, real next message, control arm</td><td>Facts 7.4 vs 8.0 of 8. Next-step plans 1.2 vs 2.0 of 2</td><td class="mixed">Facts passed, plans failed</td><td>On, with the result shown in Settings. You can turn it off</td></tr>
+      <tr><td>Pinned rules: standing rules kept in the system prompt</td><td>Paired test, 4 rules checked by script, rule set first. Chat rules vs pinned rules after compaction, plus a no-compaction control</td><td>Rules said in the chat were broken 9% of the time after compaction. Pinned: 0%. Control: 6%</td><td class="mixed">No measured benefit</td><td>Optional. We do not claim it improves rule-following</td></tr>
+      <tr><td>Compact only after a pause, not at a fixed size</td><td>Replay of 30 days of one person's chats. No model calls, quality not measured</td><td>Replay: about 23% cheaper for chats and no compaction in the middle of a tool loop. A plain 200K cap: about 18% and 15 mid-loop compactions</td><td class="mixed">Replay only, not proven</td><td>Opt-in "Smart compact". Fleet logs each setting change so the effect can be checked on real use</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">Small samples, on one person's work. Costs are at API list prices. The last row is a replay of past chats, not a measurement: it shows where a rule would have saved money, not what it does to quality.</p>
+  <p class="sub" style="margin-top:22px">Others found the same trap. In a <a href="https://arxiv.org/abs/2607.12161">2,908-run study of Claude Code</a>, removing bytes did not reliably reduce the bill: one compression setup cut tool output by 38.4% and raised billed cost by 6.8%. Prompt caching is the reason. Ask any saver for a paired test.</p>
+</section>
+
+<section>
+  <h2>Before you trust it</h2>
+  <div class="two">
+    <div class="card"><h3>What Fleet touches</h3><ul class="clean">
+      <li>It runs the official <code>claude</code> and <code>codex</code> commands. It does not modify them or read your login tokens.</li>
+      <li>Your usage stays between you and your vendor. Fleet is not in that path.</li>
+      <li>The X-ray runs on your Mac. Nothing is uploaded, and there are no analytics.</li>
+      <li>Fleet itself makes two kinds of network call: a license check after you buy, and a plain request for <a href="version.json">version.json</a> to see if an update exists. Watch them with Little Snitch if you like.</li>
+    </ul></div>
+    <div class="card"><h3>What it does not do</h3><ul class="clean">
+      <li>Mac only. No Linux or Windows. Apple Silicon only for now.</li>
+      <li>No remote access from your phone or another machine.</li>
+      <li>If you quit Fleet, its agents stop. Chats resume by id, but a task in progress does not.</li>
+      <li>Codex panes show DONE, not WAITING, and have no per-pane cost.</li>
+      <li>No automatic updates. Fleet tells you when a new version exists, and you download it.</li>
+      <li>Beta, from one developer. Expect bugs and tell me about them.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section id="pricing">
+  <h2>One payment. No subscription.</h2>
+  <p class="sub">Fleet does not resell tokens, so you pay us once and your vendor as usual.</p>
+  <div class="two">
+    <div class="card"><h3>Free</h3><div class="price">$0</div><ul class="clean">
+      <li>14 days with everything unlocked, no card</li>
+      <li>Then 3 panes in total, with every feature above</li>
+      <li>Bill X-ray with no limit</li>
+    </ul></div>
+    <div class="card"><h3>Pro, one time</h3><div class="price">$24 <small>launch price, $39 after</small></div><ul class="clean">
+      <li>Up to 16 panes per screen, unlimited screens</li>
+      <li>Works on 3 of your Macs</li>
+      <li>Every 0.x update. 30-day refund</li>
+    </ul><p style="margin-top:14px"><a class="btn primary" href="https://checkout.dodopayments.com/buy/pdt_0No8294k2zu1ueeXAt9hJ?quantity=1">Buy Fleet Pro</a></p></div>
+  </div>
+  <p class="note">Local tax may apply at checkout. Payments go through Dodo Payments.</p>
+</section>
+
+<section id="install">
+  <h2>Install</h2>
+  <p class="sub">Paste this in Terminal. It downloads the app, checks its SHA-256, and puts it in Applications. <a href="install.sh">Read the script first.</a></p>
+  <pre><code>curl -fsSL https://fleetapp.in/install.sh | sh</code></pre>
+  <p class="note">Or <a href="https://github.com/hotgarlicprawns/fleetapp-site/releases/latest">download the DMG</a>. Until the notarized build ships, macOS warns on first open: go to System Settings &gt; Privacy &amp; Security, then choose Open Anyway.</p>
+</section>
+
+<section>
+  <h2>Questions</h2>
+  <details><summary>Does it work with my Claude plan?</summary><p>Yes. It runs Claude Code in your own account, the same as a terminal. You sign in through Claude Code, not through Fleet.</p></details>
+  <details><summary>Why not tmux or plain terminal tabs?</summary><p>If those work for you, keep them. Fleet is for when you run enough agents that finding the one waiting for you has become the job.</p></details>
+  <details><summary>Will it save me tokens?</summary><p>We do not promise that. See the table above. The X-ray can show you where your usage goes, and what you change is up to you.</p></details>
+  <details><summary>Is Second opinion safe? Does it improve my code?</summary><p>It runs read-only, so it does not change files. We have not tested whether it improves code. Published work is mixed, and a reviewer can raise false alarms, so treat its list as suggestions and check each one.</p></details>
+  <details><summary>Is this made by Anthropic or OpenAI?</summary><p>No. Fleet is an independent app and is not affiliated with or endorsed by either company. Claude Code and Codex belong to their owners.</p></details>
+</section>
+
+<footer>
+  Made by Bishesh Sinha. <a href="privacy.html">Privacy</a> · <a href="https://github.com/hotgarlicprawns/fleetapp-site/issues">Report a bug</a>
+</footer>
+</div>
+</body>
+</html>
