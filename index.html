@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fleet: the cockpit and cost X-ray for Claude Code and Codex</title>
-<meta name="description" content="A native Mac cockpit for Claude Code and Codex. Every chat in its own pane, a free X-ray of where your tokens went, and a side panel that turns cost switches, skills and compaction into buttons. No proxy, no login, nothing uploaded.">
-<meta property="og:title" content="Fleet: know which coding agent needs you">
-<meta property="og:description" content="A Mac cockpit for Claude Code and Codex with a bill X-ray, one-click compaction and cost switches. We publish the tests our own ideas failed.">
+<title>Fleet: mission control for Claude Code and Codex agents</title>
+<meta name="description" content="Native Mac mission control for Claude Code and Codex. Run many agents, see where every token and dollar went, switch skills and plugins off, and test every cost idea on your own work. Nothing is uploaded.">
+<meta property="og:title" content="Fleet: mission control for AI coding agents">
+<meta property="og:description" content="Run many agents. See where the money went. Test every cost idea on your own work. A native Mac app for Claude Code and Codex.">
 <meta property="og:image" content="https://fleetapp.in/icon-512.png">
 <link rel="icon" href="favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -82,74 +82,288 @@ footer{margin:72px 0 40px;padding-top:22px;border-top:1px solid var(--line);colo
 footer a{color:var(--soft)}
 @media (max-width:760px){.grid{grid-template-columns:1fr 1fr}.pane:nth-child(n+5){display:none}nav .links a.opt{display:none}}
 @media (max-width:460px){.grid{grid-template-columns:1fr}.pane:nth-child(n+4){display:none}}
+
+/* ===== v2: showcase ===== */
+:root{--glow:rgba(95,227,194,.16);--amber-soft:rgba(230,182,103,.14)}
+.hero{position:relative;padding:34px 0 0;text-align:center}
+.hero::before{content:"";position:absolute;inset:-40px -20px auto;height:520px;background:radial-gradient(60% 60% at 50% 0%,var(--glow),transparent 70%),linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 44px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/44px 100%;-webkit-mask-image:radial-gradient(70% 80% at 50% 0%,#000 20%,transparent 75%);mask-image:radial-gradient(70% 80% at 50% 0%,#000 20%,transparent 75%);opacity:.55;pointer-events:none;z-index:0}
+.hero>*{position:relative;z-index:1}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font:500 12.5px var(--mono);color:var(--accent);border:1px solid var(--line-2);background:var(--panel-2);padding:6px 12px;border-radius:99px;letter-spacing:.04em}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.hero h1{margin:22px auto 16px;max-width:15em;font-size:clamp(38px,7vw,68px);line-height:1.04}
+.hero h1 em{font-style:normal;background:linear-gradient(95deg,var(--accent),#8fb8ff 60%,var(--warn));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lede{margin:0 auto 26px;text-align:center;max-width:36em}
+.hero .cta{justify-content:center}
+.hero .hint{text-align:center}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:34px 0 0;text-align:left}
+.pillars div{background:var(--panel-2);padding:16px 18px}
+.pillars b{display:block;font:600 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.pillars span{color:var(--soft);font-size:15px}
+@media(max-width:760px){.pillars{grid-template-columns:1fr}}
+
+/* app window */
+.app{margin:40px 0 0;border:1px solid var(--line-2);border-radius:14px;background:#090c11;overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.02) inset,0 0 120px -40px var(--glow);text-align:left}
+.app .tb{display:flex;align-items:center;gap:7px;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--line);font:500 12px var(--mono);color:var(--soft)}
+.tb .d{width:11px;height:11px;border-radius:50%;background:#3a4350}.tb .d:nth-child(1){background:#ef6b62}.tb .d:nth-child(2){background:#e6b667}.tb .d:nth-child(3){background:#5ed67a}
+.tb .sp{flex:1}.tb .chip{padding:2px 9px;border:1px solid var(--line-2);border-radius:6px;color:var(--soft)}
+.app .body{display:grid;grid-template-columns:176px 1fr 236px;min-height:430px}
+.side{background:var(--panel-2);border-right:1px solid var(--line);padding:12px 10px;font:400 12px var(--mono);color:var(--soft)}
+.side .brand{font-weight:600;color:var(--ink);padding:2px 6px 10px;font-size:14px}
+.side .row{display:flex;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:6px}
+.side .row.on{background:var(--panel);color:var(--ink)}
+.side .h{font-size:10px;letter-spacing:.08em;color:var(--faint);padding:12px 8px 4px}
+.side .cost{color:var(--faint)}
+.mid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line)}
+.p{background:#0a0d12;display:flex;flex-direction:column;min-height:136px;outline-offset:-2px;transition:outline-color .3s}
+.p.waiting{outline:2px solid var(--accent)}.p.done{outline:2px solid var(--done)}
+.p header{display:flex;gap:7px;align-items:center;padding:6px 9px;background:var(--panel);font:500 11.5px var(--mono);color:var(--soft)}
+.p .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none}
+.p.waiting .dot{background:var(--accent)}.p.done .dot{background:var(--done)}.p.working .dot{background:var(--warn);animation:pulse 1s infinite}
+.p .tg{font-weight:600;font-size:10px;letter-spacing:.04em}
+.p.waiting .tg{color:var(--accent)}.p.done .tg{color:var(--done)}.p.working .tg{color:var(--warn)}
+.p .sp{flex:1}
+.p .usd{color:var(--soft);font-size:10.5px}
+.p .st{display:flex;gap:8px;align-items:center;padding:3px 9px;background:var(--panel);border-top:1px solid var(--line);font:500 9.5px var(--mono);color:var(--faint)}
+.meter{width:46px;height:4px;border-radius:9px;background:rgba(255,255,255,.1);overflow:hidden;flex:none}.meter i{display:block;height:100%;background:var(--faint)}
+.p pre{margin:0;border:0;background:none;padding:9px;font:400 11px/1.5 var(--mono);color:#b9c1cc;white-space:pre-wrap;overflow:hidden;flex:1}
+.caret::after{content:"▍";color:var(--accent);animation:pulse 1s infinite}
+.panel{background:var(--panel-2);border-left:1px solid var(--line);padding:12px;font:400 11.5px var(--mono);color:var(--soft)}
+.tabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:2px;margin-bottom:12px}
+.tabs span{flex:1;text-align:center;padding:4px 0;border-radius:5px;font-size:10.5px}.tabs .a{background:var(--line-2);color:var(--ink)}
+.lv{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:8px}
+.lv .t{display:flex;justify-content:space-between;align-items:center;color:var(--ink);font-weight:600;margin-bottom:4px}
+.lv small{display:block;color:var(--faint);font-size:10.5px;line-height:1.4}
+.sw{font:600 10px var(--mono);padding:2px 9px;border-radius:99px;border:1px solid var(--line-2);color:var(--soft);background:transparent;cursor:pointer}
+.sw.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+@media(max-width:900px){.app .body{grid-template-columns:1fr}.side,.panel{display:none}}
+@media(max-width:560px){.mid{grid-template-columns:1fr}.p:nth-child(n+4){display:none}}
+.cap{font:400 12.5px var(--mono);color:var(--faint);margin:10px 0 0;text-align:center}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:56px}
+.stat{border-left:2px solid var(--accent);padding:2px 0 2px 16px}
+.stat b{display:block;font:700 clamp(30px,4.4vw,44px)/1.05 var(--mono);letter-spacing:-.02em}
+.stat span{color:var(--soft);font-size:15px}
+.stat.w{border-color:var(--warn)}.stat.r{border-color:var(--bad)}
+
+/* feature rows */
+.feat{display:grid;grid-template-columns:1fr 1.12fr;gap:38px;align-items:center;padding:78px 0 0}
+.feat.flip{grid-template-columns:1.12fr 1fr}.feat.flip .txt{order:2}
+.kick{font:600 12px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+.feat h2{margin:0 0 12px;font-size:clamp(26px,3.8vw,38px)}
+.feat p{color:var(--soft);margin:0 0 12px}
+.feat ul{margin:12px 0 0;padding:0;list-style:none;color:var(--soft);font-size:15.5px}
+.feat li{margin:8px 0;padding-left:22px;position:relative}
+.feat li::before{content:"";position:absolute;left:2px;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--accent)}
+.feat .small{font:400 13px var(--mono);color:var(--faint)}
+.vis{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;padding:18px;box-shadow:0 20px 60px -30px rgba(0,0,0,.8);position:relative;overflow:hidden}
+.vis .lab{font:500 11px var(--mono);color:var(--faint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between}
+@media(max-width:860px){.feat,.feat.flip{grid-template-columns:1fr;gap:22px;padding-top:56px}.feat.flip .txt{order:0}}
+
+/* x-ray chart */
+.chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding-top:6px}
+.chart .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0}
+.chart .b i{display:block;border-radius:2px 2px 0 0;height:0;transition:height 1.1s cubic-bezier(.2,.8,.2,1)}
+.chart .h{background:var(--warn)}.chart .c{background:var(--accent)}
+.split{display:flex;gap:2px;height:10px;margin:16px 0 8px}.split i{display:block;border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font:400 12px var(--mono);color:var(--soft)}
+.legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.waste{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font:400 12.5px var(--mono)}
+.waste div{display:flex;justify-content:space-between;padding:4px 0;color:var(--soft)}.waste b{color:var(--warn);font-weight:600}
+.peak{position:absolute;font:600 11px var(--mono);color:var(--ink);background:var(--bg2,#1b222c);border:1px solid var(--line-2);padding:3px 8px;border-radius:6px;opacity:0;transition:opacity .6s .9s}
+.on .peak{opacity:1}
+
+/* cache clock */
+.clock{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.ring{position:relative;width:150px;height:150px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .t{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font:700 26px var(--mono)}
+.ring .t small{display:block;font:500 10.5px var(--mono);color:var(--faint);margin-top:2px;letter-spacing:.05em}
+.clock .msg{flex:1;min-width:200px;font-size:14.5px;color:var(--soft)}
+.clock .msg b{display:block;font:600 15px var(--mono);margin-bottom:6px;color:var(--ink)}
+.clock.cold .msg b{color:var(--bad)}
+.clock.cold .ring .t{color:var(--bad)}
+.bill{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.tag2{font:500 11.5px var(--mono);border:1px solid var(--line-2);border-radius:6px;padding:3px 9px;color:var(--soft)}
+.tag2.bad{border-color:var(--bad);color:var(--bad)}
+
+/* tax */
+.tx{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.tx b{font:700 26px var(--mono)}.tx span{font:400 12px var(--mono);color:var(--faint)}
+.item{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);margin-bottom:6px;transition:opacity .3s}
+.item.off{opacity:.45}
+.item .n{flex:1;min-width:0}.item .n b{display:block;font:600 12.5px var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .n small{font:400 11px var(--mono);color:var(--faint)}
+.item .adv{color:var(--warn)}
+.bar2{height:6px;border-radius:9px;background:rgba(255,255,255,.08);overflow:hidden;margin:2px 0 12px}.bar2 i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--accent),var(--warn));transition:width .5s}
+.restart{display:inline-block;font:600 10px var(--mono);background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 10px;opacity:0;transform:translateY(4px);transition:.3s}.restart.show{opacity:1;transform:none}
+
+/* compaction */
+.ctxrow{display:flex;align-items:center;gap:12px}
+.ctxbar{flex:1;height:14px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+.ctxbar i{display:block;height:100%;width:10%;background:var(--accent);border-radius:99px;transition:width .35s linear,background .3s}
+.ctxbar::after{content:"";position:absolute;left:75%;top:-2px;bottom:-2px;width:1px;background:var(--faint)}
+.ctxk{font:700 18px var(--mono);min-width:72px;text-align:right}
+.state{margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{font:600 11px var(--mono);padding:4px 10px;border-radius:7px;border:1px solid var(--line-2);color:var(--soft)}
+.badge.go{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);animation:pulse 1s infinite}
+.badge.warn{border-color:var(--warn);color:var(--warn)}
+.log{margin-top:12px;font:400 12px/1.6 var(--mono);color:var(--faint);min-height:40px}
+
+/* experiment */
+.coins{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.coin{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:12px}
+.coin .o{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--mono);border:2px solid var(--line-2);color:var(--soft);transition:.2s}
+.coin .o.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.coin .o.flip{animation:flip .6s}
+@keyframes flip{0%{transform:rotateY(0)}50%{transform:rotateY(540deg) scale(1.15)}100%{transform:rotateY(1080deg)}}
+.coin b{display:block;font:600 12.5px var(--mono)}.coin small{font:400 11px var(--mono);color:var(--faint)}
+.ledger{margin-top:12px;background:#080b10;border:1px solid var(--line);border-radius:8px;padding:10px;font:400 11.5px/1.6 var(--mono);color:#9fb0c3;overflow-x:auto;white-space:pre}
+.verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.verdicts div{border:1px solid var(--line);border-radius:8px;padding:8px;font:500 11px var(--mono);color:var(--soft);text-align:center}
+.verdicts div b{display:block;font-size:12px;margin-bottom:2px}
+.v-a b{color:var(--done)}.v-r b{color:var(--bad)}.v-i b{color:var(--warn)}
+
+/* more grid */
+.more{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:26px}
+.mc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;transition:transform .2s,border-color .2s}
+.mc:hover{transform:translateY(-2px);border-color:var(--line-2)}
+.mc .ic{width:34px;height:34px;border-radius:9px;background:var(--panel-2);border:1px solid var(--line-2);display:grid;place-items:center;margin-bottom:10px;color:var(--accent)}
+.mc h3{margin:0 0 4px;font-size:16.5px}.mc p{margin:0;color:var(--soft);font-size:14.5px}
+.rule{height:1px;background:var(--line);margin:70px 0 0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.feat>*,.vis,.app,.body>*,.more>*,.stats>*,.cards>*{min-width:0}
+.ledger{white-space:pre-wrap;overflow-wrap:anywhere}
+html,body{overflow-x:hidden}
+.mid.two{grid-template-columns:1fr 1fr;border-radius:8px;overflow:hidden}
+@media(max-width:560px){.mid.two{grid-template-columns:1fr}}
+@media(max-width:560px){.hero .cta .btn{padding:12px 16px}.peak{display:none}.ring{width:120px;height:120px}.ring svg{width:120px;height:120px}.clock{gap:14px}.coins{grid-template-columns:1fr}.verdicts{grid-template-columns:1fr}.tb .chip{display:none}}
+
+/* ===== v3: one interactive app ===== */
+.demo{margin-top:36px}
+.demo .tb .chip{cursor:pointer;user-select:none}
+.demo .tb .chip.on{border-color:var(--accent);color:var(--accent)}
+.pill{white-space:nowrap}
+.rs{font:600 10.5px var(--mono);background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:3px 10px;opacity:0;transition:opacity .3s}.rs.show{opacity:1}
+.dbody{display:grid;grid-template-columns:190px 1fr 232px;min-height:560px}
+.dside{background:var(--panel-2);border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;overflow:auto}
+.dside .h{font:500 10px var(--mono);letter-spacing:.09em;color:var(--faint);padding:8px 8px 4px}
+#dnav{justify-content:flex-start;align-items:stretch;padding:10px 8px}
+.fb{display:flex;align-items:center;gap:9px;text-align:left;width:100%;background:none;border:0;color:var(--soft);font:500 12.5px var(--mono);padding:8px 9px;border-radius:7px;cursor:pointer;position:relative}
+.fb svg{flex:none;opacity:.8}
+.fb:hover{background:var(--panel);color:var(--ink)}
+.fb.on{background:var(--panel);color:var(--ink);box-shadow:inset 2px 0 0 var(--accent)}
+.fb.on svg{color:var(--accent);opacity:1}
+.dmain{display:flex;flex-direction:column;min-width:0;background:#0a0d12}
+.stage{flex:1;padding:14px;min-height:340px;position:relative;overflow:hidden}
+.stage .sc-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+.stage .sc-h .ctl{display:flex;gap:6px;letter-spacing:0;text-transform:none}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:7px;overflow:hidden}
+.seg button{background:none;border:0;color:var(--soft);font:500 11px var(--mono);padding:4px 10px;cursor:pointer}
+.seg button.on{background:var(--line-2);color:var(--ink)}
+.btn2{font:600 11px var(--mono);border:1px solid var(--line-2);background:var(--panel);color:var(--ink);padding:5px 11px;border-radius:7px;cursor:pointer}
+.btn2:hover{border-color:var(--accent);color:var(--accent)}
+.btn2.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.out{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:1px;background:var(--line);border-top:1px solid var(--line)}
+.out>div{background:var(--panel-2);padding:12px 14px;min-width:0}
+.out small{display:block;font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.out b{display:block;font:600 13.5px/1.35 var(--mono);color:var(--ink);margin-bottom:3px;overflow-wrap:anywhere}
+.out span{display:block;font-size:13.5px;color:var(--soft);line-height:1.45}
+.out .sv b{color:var(--warn)}
+.prog{height:2px;background:var(--line)}.prog i{display:block;height:100%;width:0;background:var(--accent)}
+.demo .panel .nt{font:400 10.5px var(--mono);color:var(--faint);margin-top:10px;line-height:1.45}
+.stage .mid{grid-template-columns:repeat(2,1fr);border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.stage .p{min-height:132px}
+.xb{font:600 9px var(--mono);color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 4px;margin-left:4px}
+.flash{animation:fl .9s}
+@keyframes fl{0%{box-shadow:0 0 0 0 var(--accent)}40%{box-shadow:0 0 0 6px rgba(95,227,194,.35)}100%{box-shadow:0 0 0 0 transparent}}
+.two2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.col{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;font:400 12px/1.55 var(--mono);color:var(--soft);min-height:200px}
+.col h4{margin:0 0 8px;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.msg2{padding:5px 8px;border-radius:6px;margin-bottom:5px;background:var(--panel-2)}
+.msg2.rule{border-left:2px solid var(--accent)}
+.msg2.gone{opacity:.25;text-decoration:line-through}
+.sysp{border:1px dashed var(--accent);border-radius:8px;padding:8px;color:var(--ink)}
+.term{background:#080b10;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font:400 12.5px var(--mono);color:#b9c1cc;margin-top:10px;min-height:42px}
+.term b{color:var(--accent);font-weight:600}
+.search{width:100%;background:var(--panel);border:1px solid var(--line-2);border-radius:7px;color:var(--ink);font:400 12.5px var(--mono);padding:8px 10px;margin-bottom:8px}
+.sk{display:flex;justify-content:space-between;gap:10px;padding:6px 8px;border-radius:6px;cursor:pointer;font:400 12px var(--mono);color:var(--soft)}
+.sk:hover{background:var(--panel)}.sk b{color:var(--ink);font-weight:600}.sk small{color:var(--faint)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px;cursor:pointer;font:500 12px var(--mono);color:var(--soft);text-align:left}
+.tile:hover,.tile.on{border-color:var(--accent);color:var(--ink)}
+.tile b{display:block;color:var(--ink);margin-bottom:3px}
+.issue{background:#080b10;border:1px solid var(--line);border-radius:8px;padding:12px;font:400 12px/1.6 var(--mono);color:#b9c1cc;white-space:pre-wrap}
+@media(max-width:1000px){.dbody{grid-template-columns:150px 1fr}.demo .panel{display:none}}
+@media(max-width:760px){.stage .mid{grid-template-columns:1fr 1fr}.dbody{grid-template-columns:1fr}.dside{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:6px}.dside .h{display:none}.fb{white-space:nowrap;width:auto;flex:none}.out{grid-template-columns:1fr}.stage .mid{grid-template-columns:1fr 1fr}.stage .p:nth-child(n+5){display:none}.two2{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}.demo .tb .chip{display:none}}
+@media(max-width:480px){.stage .mid{grid-template-columns:1fr}.stage .p:nth-child(n+4){display:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <nav>
   <a class="brand" href="#"><img src="icon-512.png" alt="">fleet</a>
-  <div class="links"><a class="opt" href="#what">What it does</a><a href="#proof">Our tests</a><a href="#pricing">Pricing</a><a href="#install">Install</a></div>
+  <div class="links"><a class="opt" href="#demo">Try it</a><a class="opt" href="#more">Features</a><a href="#proof">Proof</a><a href="#pricing">Pricing</a><a href="#install">Install</a></div>
 </nav>
 
-<h1>Run every coding agent from one window. See what each one costs.</h1>
-<p class="lede">Fleet is a native Mac cockpit for Claude Code and Codex. Each chat gets a pane that says WAITING or DONE. A free X-ray shows where your tokens went. A side panel turns compaction, cache and skills into buttons. We test every switch before we say it helps.</p>
-<div class="cta">
-  <a class="btn primary" href="#install">Download for Mac</a>
-  <a class="btn ghost" href="#proof">See what we tested</a>
+<header class="hero">
+  <span class="eyebrow"><i></i>FOR CLAUDE CODE AND CODEX · NATIVE MAC APP</span>
+  <h1>Mission control for <em>AI coding agents</em></h1>
+  <p class="lede">Run a dozen agents at once and always know which one needs you. See exactly where every token and dollar went. Choose what each chat carries. Then test every idea on your own work, and keep only what survives.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Get Fleet for Mac</a>
+    <a class="btn ghost" href="#demo">Try it below</a>
+  </div>
+  <p class="hint">Free for 3 panes · Apple Silicon, macOS 13 or later · first public build pending Apple notarization · no proxy, no login to us</p>
+
+  <div class="app demo" id="demo" aria-label="Interactive Fleet demo with sample data">
+    <div class="tb"><i class="d"></i><i class="d"></i><i class="d"></i><span style="margin-left:8px">fleet</span><span class="sp"></span><span class="rs" id="rs">↻ Restart to apply</span><span class="chip on" id="tour-btn" role="button" tabindex="0">⏸ Auto tour</span><span class="pill" id="wcount">2 waiting</span></div>
+    <div class="dbody">
+      <nav class="dside" id="dnav" aria-label="Features"></nav>
+      <div class="dmain">
+        <div class="stage" id="stage"></div>
+        <div class="out" id="out"></div>
+      </div>
+      <aside class="panel" id="dpanel">
+        <div class="tabs"><span class="a">Tune</span><span>Tax</span><span>Skills</span><span>Share</span></div>
+        <div class="lv"><div class="t">Smart compact: auto<button class="sw on" data-t="sm">On</button></div><small>Compacts only after a chat finishes and waits for you. Never mid tool loop.</small></div>
+        <div class="lv"><div class="t">Helper cache: 1 hour<button class="sw" data-t="hc">Off</button></div><small>Same tokens, same quality. Costs more on fast helpers, saves on slow ones.</small></div>
+        <div class="lv"><div class="t">Context cap: 200K<button class="sw" data-t="cap">Off</button></div><small>Compacts at 200K for the chat and its helpers. Quality at a cap is still being tested.</small></div>
+        <div class="lv"><div class="t">Run experiment x1<button class="sw" data-t="x1">Off</button></div><small>A fair coin per lever for each new chat. The plan is written before the data.</small></div>
+        <div class="nt">These are the real switches from the app's side panel. Click them: the scenes react. A change applies to a pane when it restarts.</div>
+      </aside>
+    </div>
+    <div class="prog"><i id="prog"></i></div>
+  </div>
+  <p class="cap">The window is an illustration with sample data, and it is clickable. It plays a tour by itself. Click any feature to take over.</p>
+  <div class="pillars">
+    <div><b>Run</b><span>Many agents, one window. WAITING and DONE from Claude Code's own hooks.</span></div>
+    <div><b>See</b><span>Bill X-ray, cache clock, context tax. Your own transcripts, read on your Mac.</span></div>
+    <div><b>Prove</b><span>Randomised tests with guardrails. We publish the ideas that failed.</span></div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="stat"><b>196</b><span>automated checks pass before every release, on an isolated copy of the app</span></div>
+  <div class="stat w"><b>0 bytes</b><span>uploaded by the X-ray, the tax tab or the cache clock. No analytics.</span></div>
+  <div class="stat r"><b>4 levers</b><span>cost ideas that Fleet can test with fair coins on your own chats, before you believe them</span></div>
 </div>
-<p class="hint">Free for 3 panes. Apple Silicon, macOS 13 or later. You need your own Claude Code or Codex.</p>
 
-<figure class="shot" style="margin-bottom:0" aria-label="Illustration of the Fleet window with six panes">
-  <div class="bar"><span>acme</span><span class="pill">2 waiting</span></div>
-  <div class="grid">
-    <div class="pane waiting"><header><i class="dot"></i>api <span class="tag">WAITING</span></header><pre>Do you want to make this edit
-to server.js?
-❯ 1. Yes
-  2. Yes, allow all edits
-  3. No</pre></div>
-    <div class="pane done"><header><i class="dot"></i>web <span class="tag">DONE</span></header><pre>index.html shows a heading and
-one button that opens an alert.</pre></div>
-    <div class="pane working"><header><i class="dot"></i>billing <span class="tag">WORKING</span></header><pre>Reading invoice.py…</pre></div>
-    <div class="pane waiting"><header><i class="dot"></i>mobile <span class="tag">WAITING</span></header><pre>Do you want to make this edit
-to Settings.swift?
-❯ 1. Yes</pre></div>
-    <div class="pane done"><header><i class="dot"></i>docs <span class="tag">DONE</span></header><pre>install.md now requires Node 20.</pre></div>
-    <div class="pane working"><header><i class="dot"></i>tests <span class="tag">WORKING</span></header><pre>running 187 checks…</pre></div>
-  </div>
-</figure>
-<p class="note">Illustration of the layout, with sample text.</p>
-
-<section id="what">
-  <h2>A cockpit for the agents, and a window into the bill</h2>
-  <p class="sub">Press ⌘J and you jump to the next pane that needs you. Everything below runs on your Mac, on top of the official CLIs.</p>
-
-  <h3 class="grp">Run many agents</h3>
-  <div class="cards">
-    <div class="card"><h3>Who needs you</h3><p>WAITING when an agent asks a question or wants permission. DONE when it finishes. A sound you choose, a Dock count, a Mac notification. The states come from Claude Code's own hooks, not from guessing at the screen.</p></div>
-    <div class="card"><h3>Chats that come back</h3><p>Each pane resumes its own chat by id when you reopen Fleet. "Restart to update" is one button that keeps the chat. Close a screen by mistake and it waits in Recently Closed (⇧⌘T). Open any folder as a new screen (⌘O).</p></div>
-    <div class="card"><h3>Screens and worktrees</h3><p>Group panes in screens, each on its own git worktree and branch, so two agents never edit the same files. Run several Claude and Codex accounts side by side.</p></div>
-    <div class="card"><h3>Talk to it</h3><p>Push to talk for Claude Code's voice mode, with a mic button because a terminal cannot send "key held". Drag in images. Clean copy strips the margin and trailing spaces. Clipboard history in the top bar.</p></div>
-  </div>
-
-  <h3 class="grp">See where the tokens go</h3>
-  <div class="cards">
-    <div class="card"><h3>Bill X-ray, free</h3><p>Reads the transcripts already on your Mac. It shows what the money went to: long chats, cold resumes after a pause, model switches, cache breaks, and helper agents. Costs are at API list prices, so on a plan they show usage, not your bill.</p></div>
-    <div class="card"><h3>Live cost and context</h3><p>Every Claude pane shows its cost so far and how full its context is. The top bar shows your 5-hour and weekly limits for each account.</p></div>
-    <div class="card"><h3>Check my switches</h3><p>Fleet logs each cost setting you change. Then it compares the days before with the days after, and ranks the switches by a replay of your own chats. A replay is a hint, not a result, and the panel says so.</p></div>
-  </div>
-
-  <h3 class="grp">Control it from a side panel</h3>
-  <div class="cards">
-    <div class="card"><h3>Compaction at the right moment</h3><p>Fleet shows COMPACT NOW when a chat has finished and waits for you, which is when the cache is cold anyway. It never compacts in the middle of a tool loop. An auto mode is there if you want it, with a floor you choose.</p></div>
-    <div class="card"><h3>Cost switches as buttons</h3><p>The 1-hour helper cache, smart compact, and the context cap are buttons in a side panel you can hide, not lines in a settings file. Each says what it does and what we know about it.</p></div>
-    <div class="card"><h3>Skills you can find</h3><p>The Skills tab lists the skills and plugin commands on your Mac and in your project, with search. Click one and its command goes into the pane. Add any folder of skills.</p></div>
-    <div class="card"><h3>Pinned rules</h3><p>Standing rules like "ask before you push" go into the system prompt of a chat, where compaction does not rewrite them. Fleet suggests rules from what you wrote in that chat.</p></div>
-  </div>
-
-  <h3 class="grp">Prove it, on your own work</h3>
-  <div class="cards">
-    <div class="card"><h3>A built-in experiment</h3><p>Turn on the experiment and each new chat gets a fair coin per switch. Fleet compares chats with the switch on and off, and checks that the work did not get worse: corrections, tool errors, lost context. The plan is written before the data, and a result of "can't tell" is allowed.</p></div>
-    <div class="card"><h3>Share what happened</h3><p>The Share tab opens a GitHub issue with totals and percentages only. You read it first and you click send. Nothing leaves your Mac before that.</p></div>
+<!-- MORE -->
+<section id="more">
+  <p class="kick" style="margin-top:78px">And the rest of the cockpit</p>
+  <h2>Small things that add up.</h2>
+  <div class="more">
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5M9 3h6l-1 7 3 3H7l3-3z"/></svg></div><h3>Pinned rules</h3><p>"Ask before you push." Standing rules live in the system prompt, where compaction cannot rewrite them. Fleet suggests rules from what you typed.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v4"/></svg></div><h3>Push to talk</h3><p>A mic button for Claude Code's voice mode. A terminal cannot send "key held", so Fleet does it for you.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg></div><h3>Restart to update</h3><p>One button that keeps the chat. Each pane resumes its own conversation by id, also after you quit Fleet.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="8" r="2.5"/><path d="M6 8.5v7M18 10.5c0 4-12 2-12 5"/></svg></div><h3>Worktree screens</h3><p>Each screen gets its own git branch and worktree, so two agents never edit the same files.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h10M4 17h16"/></svg></div><h3>Skills panel</h3><p>Search every skill and plugin command on your Mac and in your project. Click one and its command goes into the pane.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9M3 4v5h5M12 8v5l3 2"/></svg></div><h3>Nothing is lost</h3><p>Close a screen by mistake and it waits in Recently Closed (⇧⌘T). Open any folder as a screen (⌘O).</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14c3 0 6 2 6 5"/></svg></div><h3>Many accounts</h3><p>Run several Claude and Codex accounts side by side, each with its own limits in the top bar.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="3" width="12" height="14" rx="2"/><path d="M4 8v11a2 2 0 002 2h9"/></svg></div><h3>Clean copy and clipboard</h3><p>Copy strips the left margin and trailing spaces. Clipboard history sits in the top bar. Drag in images.</p></div>
+    <div class="mc"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H8l-4 4zM8 9h8M8 12h5"/></svg></div><h3>Share, with consent</h3><p>The Share tab opens a GitHub issue with totals only. You read it first and you press send. Nothing leaves before that.</p></div>
   </div>
 </section>
 
@@ -213,9 +427,16 @@ to Settings.swift?
 
 <section id="install">
   <h2>Install</h2>
-  <p class="sub">Paste this in Terminal. It downloads the app, checks its SHA-256, and puts it in Applications. <a href="install.sh">Read the script first.</a></p>
-  <pre><code>curl -fsSL https://fleetapp.in/install.sh | sh</code></pre>
-  <p class="note">Or <a href="https://github.com/hotgarlicprawns/fleetapp-site/releases/latest">download the DMG</a>. Until the notarized build ships, macOS warns on first open: go to System Settings &gt; Privacy &amp; Security, then choose Open Anyway.</p>
+  <div class="card" style="border-color:var(--accent)">
+    <h3>The first public build is waiting for Apple notarization</h3>
+    <p>Fleet is built, signed and tested (196 automated checks). A Mac only opens an app from the internet without a warning once Apple has notarized it, and that step is pending. The download and the install command below go live the day the first build ships. Watch the releases page to hear about it.</p>
+    <p style="margin-top:14px"><a class="btn primary" href="https://github.com/hotgarlicprawns/fleetapp-site/releases">Watch releases on GitHub</a></p>
+  </div>
+  <details style="margin-top:14px"><summary>The install command (it works from the first release)</summary>
+    <p>It downloads the app, checks its SHA-256, and puts it in Applications. <a href="install.sh">Read the script first.</a></p>
+    <pre><code>curl -fsSL https://fleetapp.in/install.sh | sh</code></pre>
+    <p class="note">Or take the DMG from the <a href="https://github.com/hotgarlicprawns/fleetapp-site/releases/latest">latest release</a>.</p>
+  </details>
 </section>
 
 <section>
@@ -230,5 +451,339 @@ to Settings.swift?
   Made by Bishesh Sinha. <a href="privacy.html">Privacy</a> · <a href="https://github.com/hotgarlicprawns/fleetapp-site/issues">Report a bug</a>
 </footer>
 </div>
+<script>
+(function(){
+"use strict";
+var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function $(id){return document.getElementById(id)}
+function el(tag, cls, html){var e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e}
+function money(v){return v>=100?"$"+Math.round(v):"$"+v.toFixed(2)}
+
+/* ---- shared state: the Tune switches ---- */
+var tune={sm:true,hc:false,cap:false,x1:false};
+var rsTimer=null;
+Array.prototype.forEach.call(document.querySelectorAll("[data-t]"),function(b){
+  b.addEventListener("click",function(){
+    var k=b.getAttribute("data-t"); tune[k]=!tune[k];
+    b.classList.toggle("on",tune[k]); b.textContent=tune[k]?"On":"Off";
+    var rs=$("rs"); rs.classList.add("show"); clearTimeout(rsTimer); rsTimer=setTimeout(function(){rs.classList.remove("show")},3500);
+    pause(); if(cur&&cur.onTune) cur.onTune();
+  });
+});
+
+/* ---- timers owned by the current scene ---- */
+var T=[];
+function every(fn,ms){ if(reduce) return; T.push(setInterval(fn,ms)) }
+function after(fn,ms){ T.push(setTimeout(fn,reduce?0:ms)) }
+function clearT(){ T.forEach(function(t){clearInterval(t);clearTimeout(t)}); T=[] }
+
+/* ---- output strip ---- */
+function out(see,tells,sample,sampleTitle){
+  $("out").innerHTML='<div><small>You see</small><b>'+see[0]+'</b><span>'+see[1]+'</span></div>'+
+    '<div><small>It tells you</small><b>'+tells[0]+'</b><span>'+tells[1]+'</span></div>'+
+    '<div class="sv"><small>'+(sampleTitle||"Sample arithmetic")+'</small><b>'+sample[0]+'</b><span>'+sample[1]+'</span></div>';
+}
+function head(title,right){return '<div class="sc-h"><span>'+title+'</span><span class="ctl">'+(right||"")+'</span></div>'}
+
+/* ---- panes ---- */
+var BODY={
+  waiting:["Do you want to make this edit\nto server.js?\n❯ 1. Yes\n  2. Yes, allow all edits\n  3. No","Allow Bash(npm test)?\n❯ 1. Yes\n  2. No, and tell Claude why","Which database should the\nmigration target?\n❯ 1. Postgres  2. SQLite"],
+  done:["Added the retry wrapper and 4 tests.\nAll 31 pass.","index.html now shows a heading and\none button that opens an alert.","install.md requires Node 20.\nChecked every link."],
+  working:["Reading invoice.py…","Running the test suite…","Searching 212 files for usages…","Editing Settings.swift…"]
+};
+var NAMES=["api","web","billing","mobile","docs","infra"], COST=[12.4,3.1,28.7,9.8,1.9,44.2], CTX=[38,14,72,51,9,88];
+var panes=[];
+function paneRender(p){
+  var e=p.el; e.className="p "+p.state;
+  var l=BODY[p.state];
+  e.querySelector(".tg").textContent=p.state.toUpperCase();
+  e.querySelector("pre").textContent=l[(p.n+Math.floor(p.cost))%l.length];
+  e.querySelector("pre").className=p.state==="working"?"caret":"";
+  e.querySelector(".usd").textContent=money(p.cost);
+  var m=e.querySelector(".meter i"); m.style.width=p.ctx+"%"; m.style.background=p.ctx>80?"var(--bad)":p.ctx>45?"var(--warn)":"var(--faint)";
+  e.querySelector(".cx").textContent=p.ctx+"% ctx";
+  e.querySelector(".ck").textContent=p.state==="working"?"":"cache "+(p.n%2?"41:20":"3:05");
+  e.querySelector(".xb").style.display=tune.x1?"":"none";
+}
+function wcount(){var w=panes.filter(function(p){return p.state==="waiting"}).length; $("wcount").textContent=w+" waiting"; return w}
+
+/* ================= scenes ================= */
+var S={};
+
+S.cockpit={label:"Cockpit",sub:"WAITING / DONE",
+  icon:'<path d="M3 4h7v7H3zM14 4h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/>',
+  mount:function(st){
+    st.innerHTML=head("Screen · acme",'<button class="btn2 pri" id="jump">⌘J  Jump to next waiting</button>')+'<div class="mid" id="grid"></div>';
+    panes=[]; var g=$("grid");
+    for(var i=0;i<6;i++){
+      var s=["waiting","done","working","waiting","done","working"][i];
+      var p=el("div","p "+s);
+      p.innerHTML='<header><i class="dot"></i>'+NAMES[i]+'<span class="xb">x1</span><span class="tg"></span><span class="sp"></span><span class="usd"></span></header><pre></pre><div class="st"><span class="meter"><i></i></span><span class="cx"></span><span class="ck"></span></div>';
+      g.appendChild(p); panes.push({el:p,state:s,n:i,cost:COST[i],ctx:CTX[i]}); paneRender(panes[i]);
+    }
+    wcount(); this.stat();
+    $("jump").onclick=function(){pause();
+      var w=panes.filter(function(p){return p.state==="waiting"})[0];
+      if(!w){return}
+      w.el.classList.remove("flash"); void w.el.offsetWidth; w.el.classList.add("flash");
+      w.state="working"; setTimeout(function(){paneRender(w);wcount();S.cockpit.stat()},700);
+    };
+    panes.forEach(function(p,i){
+      (function loop(){after(function(){
+        p.state=p.state==="working"?(Math.random()<.5?"waiting":"done"):"working";
+        if(p.state==="working"){p.cost+=Math.random()*1.6;p.ctx=Math.min(95,p.ctx+Math.round(Math.random()*6))}
+        paneRender(p);wcount();S.cockpit.stat();loop();
+      },3000+Math.random()*3800+i*350)})();
+    });
+  },
+  onTune:function(){panes.forEach(paneRender)},
+  stat:function(){
+    var w=wcount(), d=panes.filter(function(p){return p.state==="done"}).length;
+    var tot=panes.reduce(function(a,p){return a+p.cost},0);
+    out([w+" waiting · "+d+" done","Each pane has its state, cost and context. A sound and a Dock count call you back."],
+        ["Who needs you, right now","States come from Claude Code's own hooks, not from guessing at the screen. ⌘J jumps to the next waiting pane."],
+        [money(tot)+" so far","Cost per pane and the 5-hour and weekly limits sit in the bars. API list prices."],"Today, sample");
+  }};
+
+var XD=[.28,.35,.2,.1,.05,.4,.55,.3,.22,.18,.45,.6,.35,.25,.15,.08,.5,.42,.38,.3,.62,1,.74,.4,.28,.2,.33,.45,.3,.22,.12];
+var XDAYS=30;
+S.xray={label:"Bill X-ray",sub:"where it went",
+  icon:'<path d="M3 20V9M9 20V4M15 20v-8M21 20V7"/>',
+  mount:function(st){
+    st.innerHTML=head("Spend by day",'<span class="seg" id="range"><button data-d="7">7d</button><button data-d="30" class="on">30d</button><button data-d="90">90d</button></span>')+
+      '<div class="chart" id="chart" style="height:170px"></div>'+
+      '<div class="split"><i style="width:41%;background:var(--accent)"></i><i style="width:41%;background:var(--warn)"></i><i style="width:18%;background:var(--faint)"></i></div>'+
+      '<div class="legend"><span><b style="background:var(--accent)"></b>your chats</span><span><b style="background:var(--warn)"></b>helper agents</span><span><b style="background:var(--accent)"></b>re-reading 41%</span><span><b style="background:var(--warn)"></b>writing cache 41%</span><span><b style="background:var(--faint)"></b>output 18%</span></div>'+
+      '<div class="waste"><div><span>Long-chat tax: context above 100K re-read every turn</span><b>$412</b></div><div><span>Cold resumes: cache expired while you were away</span><b>$96</b></div><div><span>Model switches rebuild the whole cache</span><b>$31</b></div></div>';
+    var self=this; XDAYS=30; draw(30);
+    Array.prototype.forEach.call(document.querySelectorAll("#range button"),function(b){b.onclick=function(){pause();
+      Array.prototype.forEach.call(document.querySelectorAll("#range button"),function(x){x.classList.remove("on")}); b.classList.add("on");
+      draw(+b.getAttribute("data-d"));};});
+    function draw(d){
+      var host=$("chart"); host.innerHTML=""; var n=Math.min(d,31), vals=[];
+      for(var i=0;i<n;i++){var base=XD[(i+(d===90?7:0))%31]; var t=d===7?XD[24+i]||.2:base; vals.push(t)}
+      vals.forEach(function(t,i){
+        var b=el("div","b"), h=el("i","h"), c=el("i","c"); b.appendChild(h); b.appendChild(c); host.appendChild(b);
+        b.title="$"+Math.round(t*286)+" (sample)";
+        b.addEventListener("mouseenter",function(){sum(Math.round(t*286),i,n)});
+        setTimeout(function(){h.style.height=(t*80)+"%";c.style.height=(t*20)+"%"},reduce?0:i*18);
+      });
+      sum(null);
+    }
+    function sum(v,i,n){
+      out(v==null?["Spikes you can name","Hover a bar for that day. The project that spent most is shown in the app."]:["Sample day · "+money(v),"Your chats are the green part, helper agents the amber part."],
+          ["Why the money moved","Re-reading context, writing cache and output are split apart, then long chats, cold resumes and model switches."],
+          ["$412 + $96 + $31","The three kinds of spend the X-ray flags in this sample. Read from your own transcripts. Nothing is uploaded."],"Sample result");
+    }
+  }};
+
+S.clock={label:"Cache clock",sub:"the countdown",
+  icon:'<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 3h6"/>',
+  mount:function(st){
+    st.innerHTML=head("Paused chat · 141K context · Opus 5.5",'<button class="btn2 pri" id="back">I come back now</button>')+
+      '<div class="clock" id="cbox"><div class="ring"><svg width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="64" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9"/><circle id="arc" cx="75" cy="75" r="64" fill="none" stroke="var(--accent)" stroke-width="9" stroke-linecap="round" stroke-dasharray="402.1" stroke-dashoffset="0"/></svg><div class="t"><span id="ct">5:00</span><small id="cs">CACHE WARM</small></div></div>'+
+      '<div class="msg"><b id="ch">Next turn reads the cache</b><span id="cm">The agent finished and waits for you. Answer before the clock reaches 0:00.</span><div class="bill"><span class="tag2" id="ca">read 141K · $0.03</span><span class="tag2 bad" id="cb" style="display:none">+$0.68 to write it again</span></div></div></div>'+
+      '<p style="margin:14px 0 0;font:400 11.5px var(--mono);color:var(--faint)">Sped up for the demo. The real clock reads the cache lifetime from the chat\'s own transcript: 5 minutes or 1 hour.</p>';
+    var C=402.1,total=300,left=total,cold=false,hold=0,done=false;
+    function paint(){
+      var m=Math.max(0,Math.floor(left/60)),s=Math.max(0,Math.floor(left%60));
+      $("ct").textContent=cold?"COLD":m+":"+(s<10?"0":"")+s; $("cs").textContent=cold?"EXPIRED":"CACHE WARM";
+      var a=$("arc"); a.setAttribute("stroke-dashoffset",String(C*(1-Math.max(0,left)/total))); a.setAttribute("stroke",cold?"var(--bad)":left<90?"var(--warn)":"var(--accent)");
+      $("cbox").className="clock"+(cold?" cold":"");
+      $("ch").textContent=cold?"Next turn writes everything again":"Next turn reads the cache";
+      $("cm").textContent=cold?"The cache expired before you came back. All 141K tokens are written again at the write price. Compacting first would have made that write smaller.":"The agent finished and waits for you. Answer before the clock reaches 0:00.";
+      $("ca").style.display=cold?"none":""; $("cb").style.display=cold?"":"none";
+    }
+    function restart(){left=total;cold=false;hold=0;paint()}
+    $("back").onclick=function(){pause(); if(cold){$("cm").textContent="You came back late: that turn pays about $0.68 more than a warm one."} else {$("cm").textContent="You came back in time: that turn reads 141K from the cache for about $0.03."} hold=22; if(!cold){left=left} };
+    every(function(){ if(cold){hold++; if(hold>34)restart()} else if(hold>0){hold++; if(hold>34)restart()} else {left-=7.5; if(left<=0){left=0;cold=true;hold=0}} paint()},120);
+    paint();
+    out(["A countdown on every paused chat","Green while warm, amber near the end, red when cold."],
+        ["Why a break can cost money","After a turn, the context waits in the cache for 5 minutes or 1 hour. Late, and the next turn writes it all again."],
+        ["$0.03 warm, $0.68 cold","141K × $0.20 per million to read. 141K × (1.25 × $4 − $0.20) per million more to write it again. List prices, Opus."]);
+  }};
+
+var TAXITEMS=[
+  {n:"~/AGENTS.md",k:"instructions",t:2152,c:null,sw:false,note:"a file you own: Fleet cannot switch it"},
+  {n:"payments plugin",k:"plugin",t:1994,c:6,sw:true,note:"6 calls"},
+  {n:"billing-docs plugin",k:"plugin",t:1074,c:0,sw:true,unused:true,note:"0 calls · unused in 30 days"},
+  {n:"claude.ai connectors",k:"connectors",t:473,c:26,sw:true,note:"26 calls"},
+  {n:"dataviz",k:"skill",t:362,c:0,sw:true,unused:true,note:"0 calls · unused in 30 days"},
+  {n:"code-review",k:"skill",t:302,c:0,sw:true,unused:true,note:"0 calls · unused in 30 days"}
+];
+S.tax={label:"Context tax",sub:"skills & plugins",
+  icon:'<path d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5"/>',
+  mount:function(st){
+    TAXITEMS.forEach(function(i){i.on=true});
+    st.innerHTML=head("Side panel · Tax",'<button class="btn2 pri" id="unused">Switch off unused</button>')+
+      '<div class="tx"><b id="ttok">6.4K tokens</b><span id="tusd">on every turn</span></div><div class="bar2"><i id="tbar"></i></div><div id="tlist"></div>';
+    var host=$("tlist"), total=TAXITEMS.reduce(function(a,i){return a+i.t},0);
+    TAXITEMS.forEach(function(it){
+      var r=el("div","item"); r.innerHTML='<div class="n"><b>'+it.n+'</b><small>'+it.k+' · '+(it.t/1000).toFixed(1)+'K tokens a turn · <span class="'+(it.unused?"adv":"")+'">'+it.note+'</span></small></div>';
+      if(it.sw){var b=el("button","sw on","On"); b.onclick=function(){pause();it.on=!it.on;set(it)}; r.appendChild(b); it.b=b}
+      it.r=r; host.appendChild(r);
+    });
+    function set(it){it.r.classList.toggle("off",!it.on); it.b.classList.toggle("on",it.on); it.b.textContent=it.on?"On":"Off"; sum()}
+    function sum(){
+      var t=0,off=0; TAXITEMS.forEach(function(i){ if(i.on) t+=i.t; else off+=i.t });
+      $("ttok").textContent=(t/1000).toFixed(1)+"K tokens"; $("tbar").style.width=(t/total*100)+"%";
+      $("tusd").textContent="on every turn · about "+money(t*2862*0.2/1e6)+" a month";
+      var rs=$("rs"); if(off>0){rs.textContent="↻ Restart to apply tools"; rs.classList.add("show")}else rs.classList.remove("show");
+      out(["Every item, with its price","Tokens a turn, calls in 30 days, and a warning for what you never used."],
+          ["What can go","A skill, a plugin or all claude.ai connectors can be hidden from the chats Fleet starts. Nothing is uninstalled."],
+          [off?("−"+(off/1000).toFixed(1)+"K tokens a turn"):"nothing switched off yet","Arithmetic at the cache-read price: "+(off?money(off*2862*0.2/1e6):"$0.00")+" a month for 2,862 turns. On our own Mac the whole tax was under 1% of the bill."]);
+    }
+    $("unused").onclick=function(){pause();TAXITEMS.forEach(function(i){if(i.unused&&i.b){i.on=false;set(i)}})};
+    sum();
+    if(!reduce) after(function(){ var u=TAXITEMS.filter(function(i){return i.unused&&i.b}); u.forEach(function(i,k){after(function(){i.on=false;set(i)},k*700)}) },2200);
+  },
+  unmount:function(){$("rs").classList.remove("show")}};
+
+S.compact={label:"Smart compact",sub:"/compact, safely",
+  icon:'<path d="M4 8h16M8 12h8M10 16h4"/>',
+  mount:function(st){
+    st.innerHTML=head("Chat context",'<span id="cstate">agent working</span>')+
+      '<div class="ctxrow"><div class="ctxbar"><i id="cxb"></i></div><div class="ctxk" id="cxk">40K</div></div>'+
+      '<div class="state"><span class="badge warn" id="cxbadge">working · compaction not offered</span><button class="btn2 pri" id="cnow" style="display:none">COMPACT NOW</button></div>'+
+      '<div class="log" id="clog">tool loop running…</div>';
+    var tok=40,phase="loop",wait=0;
+    function paint(){ $("cxb").style.width=Math.min(100,tok/300*100)+"%"; $("cxk").textContent=Math.round(tok)+"K"; $("cxb").style.background=tok>250?"var(--warn)":"var(--accent)" }
+    function doCompact(){ tok=34; phase="rest"; wait=0; $("cnow").style.display="none"; var b=$("cxbadge"); b.textContent="compacted"; b.className="badge"; $("cstate").textContent="after /compact"; $("clog").textContent="262K → 34K. Pinned rules are untouched: they live in the system prompt."; paint(); sumOut(true) }
+    $("cnow").onclick=function(){pause();doCompact()};
+    function sumOut(c){
+      out(["COMPACT NOW, with the price shown","Fleet shows the cost and the saving per later turn before you click."],
+          ["Only at the safe moment","Never mid tool loop, never on the pane you are looking at. With auto on, it acts after the chat has waited a while."],
+          ["≈ $0.38 once, $0.05 a turn","262K → 34K: 228K fewer tokens read on each later turn at $0.20 per million. It pays back after about 9 turns. A replay, not a measured saving."]);
+    }
+    function step(){
+      if(phase==="loop"){ tok+=6; $("cxbadge").textContent="working · compaction not offered"; $("cxbadge").className="badge warn"; $("cstate").textContent="agent working"; $("clog").textContent="tool loop running… Fleet never compacts here."; $("cnow").style.display="none"; if(tok>=262){phase="done";wait=0} }
+      else if(phase==="done"){
+        wait++; $("cstate").textContent="agent finished · waiting for you";
+        if(tune.sm){ $("cxbadge").textContent="auto: acting in "+Math.max(0,8-wait)+" s"; $("cxbadge").className="badge go"; $("clog").textContent="Smart compact auto is On. The chat has finished and you are not looking at it, so Fleet will compact."; $("cnow").style.display="none"; if(wait>8)doCompact() }
+        else { $("cxbadge").textContent="auto is Off · you decide"; $("cxbadge").className="badge"; $("cnow").style.display=""; $("clog").textContent="Smart compact auto is Off. Fleet only shows the button. Click it, or the cache goes cold."; if(wait>16){ $("clog").textContent="You did not click. The cache went cold: the next turn writes all 262K again."; if(wait>20)doCompact() } }
+      }else{ wait++; if(wait>9){phase="loop";tok=40} }
+      paint();
+    }
+    paint(); sumOut(false); every(step,380);
+  },
+  onTune:function(){}};
+
+S.pins={label:"Pinned rules",sub:"survive /compact",
+  icon:'<path d="M12 17v5M9 3h6l-1 7 3 3H7l3-3z"/>',
+  mount:function(st){
+    st.innerHTML=head("Same rule, two places",'<button class="btn2 pri" id="rep">▶ Run /compact</button>')+
+      '<div class="two2"><div class="col"><h4>Said in the chat</h4><div class="msg2">you: add a retry wrapper</div><div class="msg2 rule" id="r1">you: always ask before you push</div><div class="msg2">claude: done, 4 tests pass</div><div class="msg2">you: now the billing page</div><div class="msg2" id="sum" style="display:none">[summary of the conversation so far…]</div></div>'+
+      '<div class="col"><h4>Pinned in the system prompt</h4><div class="sysp" id="sp">Standing rules from the user. They apply for the whole chat, also after compaction:<br>• always ask before you push</div><div class="msg2" style="margin-top:8px">you: add a retry wrapper</div><div class="msg2">…</div></div></div>'+
+      '<div class="term" id="ptm"><b>›</b> waiting for /compact</div>';
+    function run(){
+      $("ptm").innerHTML='<b>›</b> /compact …';
+      $("r1").className="msg2 rule"; $("sum").style.display="none"; var kids=document.querySelectorAll(".col")[0].querySelectorAll(".msg2");
+      kids.forEach&&kids.forEach(function(k){k.classList.remove("gone")});
+      after(function(){ kids.forEach(function(k){ if(k.id!=="sum") k.classList.add("gone") }); $("sum").style.display=""; $("ptm").innerHTML='<b>›</b> compacted. The conversation was rewritten. The rule in the chat is now only a memory of a summary.' },1400);
+    }
+    $("rep").onclick=function(){pause();run()};
+    run(); after(function(){},0); every(run,9000);
+    out(["Rules that stay put","Fleet writes your pinned rules into one file for the pane and passes it as the system prompt at each start."],
+        ["Why it matters","Compaction rewrites the conversation. The system prompt is not part of it, so a pinned rule is sent in full every turn."],
+        ["Not a claim of savings","Whether a pinned rule is obeyed better after compaction is tested in the table below, not assumed here."],"Honest note");
+  }};
+
+S.exp={label:"The experiment",sub:"fair coins",
+  icon:'<circle cx="12" cy="12" r="9"/><path d="M9 9h4a2 2 0 010 4H9m0 0h5a2 2 0 010 4H9M12 6v2m0 10v2"/>',
+  mount:function(st){
+    st.innerHTML=head("New chat · one coin per lever",'<button class="btn2 pri" id="flipb">Flip for a new chat</button>')+
+      '<div class="coins" id="coins"></div><div class="ledger" id="ledg">arms.jsonl  waiting for a chat…</div>'+
+      '<div class="verdicts"><div class="v-a"><b>ADOPT</b>interval clear, no guardrail hit</div><div class="v-r"><b>REJECT</b>a guardrail fails</div><div class="v-i"><b>CANNOT TELL</b>say nothing</div></div>';
+    var L=[["hc","Helper cache 1h"],["sm","Smart compact auto"],["cap","200K context cap"],["sv","Saver mode"]], cs=[];
+    L.forEach(function(l){var c=el("div","coin",'<span class="o">?</span><div><b>'+l[1]+'</b><small>'+l[0]+'</small></div>'); $("coins").appendChild(c); cs.push({k:l[0],o:c.querySelector(".o")})});
+    function flip(){
+      var d={x:"x1"};
+      cs.forEach(function(c,i){var v=Math.random()<.5?1:0; d[c.k]=v; c.o.classList.remove("flip"); void c.o.offsetWidth; if(!reduce)c.o.classList.add("flip"); setTimeout(function(){c.o.textContent=v?"ON":"OFF"; c.o.classList.toggle("on",!!v)},reduce?0:250+i*90)});
+      $("ledg").textContent="arms.jsonl  "+JSON.stringify(d)+(tune.x1?"":"\n(experiment is Off in the side panel: a real chat would draw no coins)");
+    }
+    $("flipb").onclick=function(){pause();flip()}; flip(); every(flip,4200);
+    out(["A fair coin for each lever","Each new chat draws on or off for every lever and Fleet writes the draw to its ledger."],
+        ["A test, not a hunch","Chats with a lever on are compared with chats with it off, on the same person in the same weeks. Guardrails watch your corrections, tool errors and lost context."],
+        ["Often: cannot tell","One person's volume is small. Fleet says so, instead of calling a lucky week a win.",],"Honest note");
+  },
+  onTune:function(){ var b=$("ledg"); if(b) b.textContent=b.textContent.split("\n")[0]+(tune.x1?"":"\n(experiment is Off in the side panel: a real chat would draw no coins)") }};
+
+var SKILLS=[["dataviz","skill","charts and dashboards"],["code-review","skill","review the current diff"],["payments:checkout","plugin","hosted checkout sessions"],["payments:refunds","plugin","refunds and disputes"],["explain","skill","explain code in a digestible format"],["loop","skill","run a prompt on an interval"],["swiftui-pro","skill","review SwiftUI code"],["night-stop","skill","stop all agents at a set time"]];
+S.skills={label:"Skills",sub:"find and insert",
+  icon:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/>',
+  mount:function(st){
+    st.innerHTML=head("Side panel · Skills",'<span>8 of 61 shown</span>')+'<input class="search" id="q" placeholder="Search skills and plugin commands…"><div id="sklist"></div><div class="term" id="skt"><b>›</b> <span id="skin"></span></div>';
+    function list(q){ var h=$("sklist"); h.innerHTML=""; SKILLS.filter(function(s){return !q||(s[0]+s[2]).toLowerCase().indexOf(q.toLowerCase())>=0}).forEach(function(s){
+      var r=el("div","sk",'<span><b>/'+s[0]+'</b> <small>'+s[1]+'</small></span><small>'+s[2]+'</small>'); r.onclick=function(){pause();ins(s[0])}; h.appendChild(r)}) }
+    function ins(n){ $("skin").textContent="/"+n+" " }
+    $("q").oninput=function(){pause();list(this.value)};
+    list(""); ins("dataviz");
+    var seq=["explain","code-review","dataviz"],k=0; every(function(){ins(seq[k++%seq.length])},2400);
+    out(["Every skill on your Mac","Skills, plugin commands, project skills and any folder you add. Searchable."],
+        ["One click to use one","Click a row and its command is typed into the pane. Claude panes only."],
+        ["Fewer typos, no memorising","It pairs with the Tax tab: the same list shows what each skill costs on every turn."],"Why it helps");
+  }};
+
+S.share={label:"Share",sub:"consent first",
+  icon:'<path d="M4 12v7h16v-7M12 3v12M8 7l4-4 4 4"/>',
+  mount:function(st){
+    st.innerHTML=head("Share · what would be sent","<span>you read it, you click</span>")+
+      '<div class="issue">Did Fleet help?  Yes\nFleet 0.9.7 · macOS 27\n\nLast 30 days (totals only)\n  chats: 32\n  re-reading 41% · writing cache 41% · output 18%\n  cold resumes: 96 dollars of the total\n\nNo project names. No chat text. No file paths.</div>'+
+      '<div style="display:flex;gap:10px;margin-top:12px"><button class="btn2 pri" id="sh1">Open as a GitHub issue</button><button class="btn2" id="sh2">Copy</button></div><div class="term" id="sht">Nothing has been sent. Nothing is sent until you click.</div>';
+    $("sh1").onclick=function(){pause();$("sht").innerHTML="<b>›</b> demo only: on the real app this opens a prefilled public GitHub issue in your browser. You press Submit yourself."};
+    $("sh2").onclick=function(){pause();$("sht").innerHTML="<b>›</b> demo only: copies the text above. Nothing leaves your Mac."};
+    out(["The exact text, first","Totals and percentages only. You can edit or drop any line before you send."],
+        ["A way to tell us it helps","Or that it did not, or that it crashed, with an optional log tail you tick yourself."],
+        ["No server, no upload","It is a normal GitHub issue that you submit. There are no analytics in Fleet."],"Privacy");
+  }};
+
+S.more={label:"Everything else",sub:"small, daily things",
+  icon:'<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  mount:function(st){
+    var TI=[["Push to talk","A mic button for Claude Code's voice mode. A terminal cannot send \"key held\", so Fleet does it for you."],["Restart to update","One button that keeps the chat. Each pane resumes its own conversation by id."],["Worktree screens","Each screen gets its own git branch and worktree: two agents never edit the same files."],["Recently Closed","Close a screen by mistake and it waits in Recently Closed (⇧⌘T). Open any folder as a screen (⌘O)."],["Many accounts","Several Claude and Codex accounts side by side, each with its own limits in the top bar."],["Clean copy","Copy strips the left margin and trailing spaces. Clipboard history sits in the top bar."]];
+    st.innerHTML=head("The rest of the cockpit","<span>click a tile</span>")+'<div class="tiles" id="tiles"></div>';
+    TI.forEach(function(t,i){var b=el("button","tile",'<b>'+t[0]+'</b>'+t[1].split(".")[0]+'.'); b.onclick=function(){pause();pick(i)}; $("tiles").appendChild(b)});
+    function pick(i){ Array.prototype.forEach.call(document.querySelectorAll(".tile"),function(x,j){x.classList.toggle("on",i===j)});
+      out([TI[i][0],TI[i][1]],["Built for many agents","These are the small things that make twelve chats feel like one tool."],["Free and Pro","All of it is in the free tier. Pro lifts the limit from 3 panes to 16 per screen."],"Good to know") }
+    var k=0; pick(0); every(function(){pick(++k%TI.length)},3200);
+  }};
+
+/* ================= engine ================= */
+var ORDER=["cockpit","xray","clock","tax","compact","pins","exp","skills","share","more"];
+var cur=null, curKey=null, tour=!reduce, tourT=null, prog=0, DUR=9000;
+var nav=$("dnav");
+nav.appendChild(el("div","h","FEATURES"));
+ORDER.forEach(function(k){
+  var s=S[k], b=el("button","fb",'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+s.icon+'</svg><span>'+s.label+'</span>');
+  b.setAttribute("data-k",k); b.onclick=function(){pause();show(k)}; nav.appendChild(b); s.btn=b;
+});
+function show(k){
+  if(cur&&cur.unmount) cur.unmount();
+  clearT(); curKey=k; cur=S[k];
+  ORDER.forEach(function(x){S[x].btn.classList.toggle("on",x===k)});
+  $("stage").innerHTML=""; panes=[]; cur.mount($("stage"));
+  prog=0;
+}
+function setTour(on){
+  tour=on; var b=$("tour-btn"); b.textContent=on?"⏸ Auto tour":"▶ Auto tour"; b.classList.toggle("on",on);
+}
+function pause(){ if(tour) setTour(false) }
+$("tour-btn").onclick=function(){ setTour(!tour); prog=0 };
+$("tour-btn").onkeydown=function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();this.click()} };
+var started=false, inView=false;
+function loop(){
+  setInterval(function(){
+    if(!tour||!inView||reduce) return;
+    prog+=100; $("prog").style.width=Math.min(100,prog/DUR*100)+"%";
+    if(prog>=DUR){ var i=ORDER.indexOf(curKey); show(ORDER[(i+1)%ORDER.length]); }
+  },100);
+}
+show("cockpit"); loop();
+if("IntersectionObserver" in window){
+  new IntersectionObserver(function(es){es.forEach(function(e){inView=e.isIntersecting})},{threshold:.2}).observe($("demo"));
+}else inView=true;
+if(reduce) setTour(false);
+})();
+</script>
 </body>
 </html>
