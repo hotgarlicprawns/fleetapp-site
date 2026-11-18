@@ -1,0 +1,7 @@
+{
+ "version": "1.0.0",
+ "url": "https://fleetapp.in/#install",
+ "zip": "https://github.com/hotgarlicprawns/fleetapp-site/releases/download/v1.0.0/Fleet-1.0.0.zip",
+ "sha256": "84d095374bd4d992aff3e6bbcc88701166b8ee74763b14d993549d31cd31c2d5",
+ "notes": "Beta. See the site for what changed."
+}
