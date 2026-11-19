@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Privacy</title>
+<link rel="canonical" href="https://fleetapp.in/privacy.html">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<style>
+/* Same dark tokens as index.html. Host Grotesk and JetBrains Mono are self-hosted (SIL OFL). */
+@font-face{font-family:"Host Grotesk";src:url("fonts/host-grotesk.woff2") format("woff2");font-weight:300 800;font-display:swap}
+@font-face{font-family:"JetBrains Mono";src:url("fonts/jetbrains-mono.woff2") format("woff2");font-weight:100 800;font-display:swap}
+:root{--ground-0:#090C10;--ground:#0C0F14;--ground-1:#10141B;--surface:#141922;--line:#232A35;--line-2:#313A47;--ink-hi:#F1F4F7;--ink:#DCE1E8;--soft:#A4AEBB;--faint:#848E9B;--accent:#5FE3C2;color-scheme:dark}
+body{margin:0;background-color:var(--ground);background-image:linear-gradient(180deg,var(--ground-1) 0,var(--ground) 640px);background-repeat:no-repeat;color:var(--soft);font:400 17px/1.65 "Host Grotesk",ui-sans-serif,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+main{max-width:680px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.back{display:inline-flex;align-items:center;gap:10px;color:var(--ink-hi);text-decoration:none;font:500 18px "Host Grotesk",ui-sans-serif,system-ui,sans-serif}
+.back img{width:24px;height:24px;border-radius:6px}
+h1{color:var(--ink-hi);font-size:48px;line-height:1.08;font-weight:500;letter-spacing:-.03em;margin:48px 0 10px}
+h2{color:var(--ink-hi);font-size:20px;font-weight:500;margin:36px 0 6px;padding-top:14px;border-top:1px solid var(--line)}
+p,li{color:var(--soft)}strong{color:var(--ink);font-weight:500}
+a{color:var(--ink);text-decoration-color:rgba(95,227,194,.55);text-underline-offset:3px;transition:color .2s,text-decoration-color .2s}
+a:hover{color:var(--ink-hi);text-decoration-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+code{font:400 .86em "JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:1px 6px;border-radius:5px;overflow-wrap:anywhere}
+.meta{color:var(--faint);font-size:15px}
+</style>
+</head>
+<body>
+<main>
+<a class="back" href="./"><img src="apple-touch-icon.png" alt="">Fleet</a>
+<h1>Privacy</h1>
+<p class="meta">Last updated: 16 November 2026. Fleet has no accounts and no analytics.</p>
+<h2>On your Mac</h2>
+<p>Fleet stores its settings in <code>~/.config/fleet</code>. Bill X-ray and the cost views read Claude Code's transcripts in <code>~/.claude</code> on your Mac. That data is not sent to us. Clipboard history stays on your Mac. It records what you copy in Fleet, and other apps' copies only if you turn that on.</p>
+<h2>What Fleet sends</h2>
+<ul>
+<li><strong>Update check.</strong> A plain request for <code>fleetapp.in/appcast.xml</code> (older versions read <code>fleetapp.in/version.json</code>), at launch and about every 6 hours. It carries no identifier, only the app's version in the user agent. Like any web request, it reveals your IP address to the host. Nothing downloads until you click Update. Then Fleet downloads the new version from GitHub and checks its signatures before it installs it.</li>
+<li><strong>License check.</strong> Only after you enter a license key: the key and a name for this Mac go to Dodo Payments, to activate and validate it. No key means no check.</li>
+</ul>
+<h2>What the agents send</h2>
+<p>Fleet runs the official Claude Code and Codex commands. They talk to Anthropic and OpenAI under your own account and those companies' terms, as they do in any terminal. Fleet is not in that path.</p>
+<h2>Purchases</h2>
+<p>Dodo Payments handles payment as merchant of record and has its own privacy policy. We receive what we need to run licenses and support.</p>
+<h2>This website</h2>
+<p>GitHub Pages hosts this site and can see your IP address. The fonts (Host Grotesk and JetBrains Mono) are hosted on this site too. Nothing loads from other sites, and we add no trackers.</p>
+<h2>Contact</h2>
+<p>Open an issue at <a href="https://github.com/hotgarlicprawns/fleetapp-site/issues">the project's tracker</a>.</p>
+</main>
+</body>
+</html>
