@@ -1,0 +1,7 @@
+{
+ "version": "1.0.2",
+ "url": "https://fleetapp.in/#install",
+ "zip": "https://github.com/hotgarlicprawns/fleetapp-site/releases/download/v1.0.2/Fleet-1.0.2.zip",
+ "sha256": "3183427501555183e23f5a3c5d1017e2b5ce49854b19c220a36d34e9f64a8d24",
+ "notes": "Command-click a file path, image or link in a pane to open it. Scripts and apps are shown in Finder, never run. Memory alerts: a chip warns when the Mac runs low on memory or swap room, and shows which panes use the most. It never stops anything. The window layout no longer breaks when you open folders or side tabs. Settings are saved safely if macOS stops Fleet."
+}
